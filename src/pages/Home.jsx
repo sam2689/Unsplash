@@ -14,7 +14,6 @@ export default function Home() {
       if (state.auth.user) {
         localStorage.setItem('user', JSON.stringify(state.auth.user));
       }
-
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);
@@ -23,7 +22,6 @@ export default function Home() {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, []);
-
 
   return (
     <div className="min-h-screen bg-white">
@@ -35,6 +33,7 @@ export default function Home() {
         onCollectionClick={(id) => dispatch({type: 'SET_ACTIVE_COLLECTION', payload: id})}
         logo={<Logo/>}
       />
+
       <PhotosGrid
         photos={state.photos}
         isLoading={state.isLoadingPhotos}

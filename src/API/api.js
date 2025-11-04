@@ -24,22 +24,24 @@ class Service {
     }
   }
 
-  static async searchPhotos(query, page = 1, perPage = 20, color = '') {
+  static async searchPhotos(query, page = 1, perPage = 20, color = '', orientation = '') {
     try {
-      const {data} = await api.get("/search/photos", {
+      const { data } = await api.get("/search/photos", {
         params: {
           query,
           page,
           per_page: perPage,
-          ...(color && {color})
+          ...(color && { color }),
+          ...(orientation && { orientation })
         }
       });
       return data.results;
     } catch (error) {
       console.error('Error searching photos:', error);
-      throw error;
+      return [];
     }
   }
+
 
   static async getUser(username) {
     try {
@@ -73,6 +75,34 @@ class Service {
       params: {page, per_page: perPage}
     });
     return data;
+  }
+
+  static async getTopics(perPage = 30) {
+    try {
+      const {data} = await api.get('/topics', {params: {per_page: perPage}});
+      return data;
+    } catch (error) {
+      console.error('Error fetching topics:', error);
+      throw error;
+    }
+  }
+
+  // Получить фото по теме
+  static async getPhotosByTopic(slug, page = 1, perPage = 20, color = '', orientation = '') {
+    try {
+      const {data} = await api.get(`/topics/${slug}/photos`, {
+        params: {
+          page,
+          per_page: perPage,
+          ...(color && {color}),
+          ...(orientation && {orientation})
+        }
+      });
+      return data;
+    } catch (error) {
+      console.error('Error fetching topic photos:', error);
+      throw error;
+    }
   }
 }
 

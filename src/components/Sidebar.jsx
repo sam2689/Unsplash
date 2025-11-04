@@ -1,21 +1,22 @@
-import {useEffect, useState} from "react";
-import {NavLink, useLocation, useNavigate} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import {logout} from "../redux/reducers/auth";
+// src/components/Sidebar.jsx
+import { useState, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../redux/reducers/auth";
 
-import ConfirmModal from "../components/ConfirmModal.jsx"; // твоя модалка
+import ConfirmModal from "./ConfirmModal.jsx";
 
 import HomeIcon from '../assets/icons/home.svg?react';
 import Star from '../assets/icons/star.svg?react';
 import Logout from '../assets/icons/logout.svg?react';
 import Admin from '../assets/icons/admin.svg?react';
 
-export default function Navbar() {
-  const location = useLocation();
+export default function Sidebar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isLoggedIn = useSelector(state => state.auth?.isLoggedIn);
   const user = useSelector(state => state.auth?.user);
+
   const [localUser, setLocalUser] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -38,37 +39,30 @@ export default function Navbar() {
     dispatch(logout());
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    navigate("/", {replace: true});
+    navigate("/", { replace: true });
   };
-
-  if (location.pathname === "/" || location.pathname === "/register") return null;
 
   return (
     <>
-      <nav className="bg-white shadow p-4 flex justify-between items-center">
-        <div className="flex space-x-4 items-center">
-          <NavLink to="/home" className="flex items-center">
-            <HomeIcon className="w-6 h-6"/>
+      <div className="flex flex-col justify-between h-screen w-20 bg-white shadow-lg p-4">
+        {/* Навигация сверху */}
+        <div className="flex flex-col space-y-6">
+          <NavLink to="/home" className="flex justify-center">
+            <HomeIcon className="w-6 h-6 text-gray-700 hover:text-orange-600"/>
           </NavLink>
-
-          <NavLink
-            to="/favorites"
-            className="text-gray-700 hover:text-orange-600 focus:text-orange-600 flex items-center"
-          >
-            <Star className="w-6 h-6"/>
+          <NavLink to="/favorites" className="flex justify-center">
+            <Star className="w-6 h-6 text-gray-700 hover:text-orange-600"/>
           </NavLink>
+          {user?.role === 'admin' && (
+            <NavLink to="/admin" className="flex justify-center">
+              <Admin className="w-6 h-6 text-gray-700 hover:text-orange-600"/>
+            </NavLink>
+          )}
         </div>
 
+        {/* Профиль и logout снизу */}
         {isLoggedIn && (
-          <div className="flex items-center space-x-3">
-            {user?.role === 'admin' && (
-              <NavLink
-                to="/admin"
-                className="text-gray-700 hover:text-orange-600 focus:text-orange-600"
-              >
-                <Admin className="w-10 h-10"/>
-              </NavLink>
-            )}
+          <div className="flex flex-col items-center space-y-4">
             {userToDisplay?.image ? (
               <img
                 src={userToDisplay.image}
@@ -85,22 +79,19 @@ export default function Navbar() {
               </div>
             )}
             <button
-              onClick={() => setShowConfirm(true)} // открываем модалку вместо прямого logout
-              className="px-4 py-1 rounded transition flex items-center text-gray-700 hover:text-orange-600 focus:text-orange-600"
+              onClick={() => setShowConfirm(true)}
+              className="p-2 rounded hover:bg-gray-100"
             >
-              <Logout className="w-6 h-6"/>
+              <Logout className="w-6 h-6 text-gray-700"/>
             </button>
           </div>
         )}
-      </nav>
+      </div>
 
       <ConfirmModal
         isOpen={showConfirm}
-        message="Are you sure you want to exit??"
-        onConfirm={() => {
-          handleLogout();
-          setShowConfirm(false);
-        }}
+        message="Are you sure you want to exit?"
+        onConfirm={() => { handleLogout(); setShowConfirm(false); }}
         onCancel={() => setShowConfirm(false)}
       />
     </>

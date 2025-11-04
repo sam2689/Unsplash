@@ -5,7 +5,7 @@ import CollectionDetailPage from "./pages/CollectionDetails.jsx";
 import CollectionsPage from "./pages/Collection.jsx";
 import Login from "./pages/Login.jsx";
 import FavoritesPage from "./pages/Favorites.jsx";
-import Navbar from "./components/Navbar.jsx";
+import Sidebar from "./components/Sidebar.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import PublicRoute from "./components/PublicRoute.jsx";
 import Register from "./pages/Register.jsx";
@@ -33,17 +33,10 @@ function App() {
             token: token
           }));
         } else {
-          console.error("Invalid user data in localStorage");
           localStorage.removeItem("user");
           localStorage.removeItem("token");
         }
       } catch (error) {
-        console.error("Failed to parse user data:", error);
-        localStorage.removeItem("user");
-        localStorage.removeItem("token");
-      }
-    } else {
-      if (userData === "undefined" || userData === "null") {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
       }
@@ -51,10 +44,12 @@ function App() {
   }, [dispatch]);
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar/>
+    <div className="flex h-screen">
+      {/* Sidebar слева */}
+      <Sidebar/>
 
-      <main className='flex-1'>
+      {/* Основной контент справа */}
+      <main className='flex-1 overflow-auto bg-gray-100'>
         <Routes>
           <Route path="/" element={
             <PublicRoute>
@@ -114,8 +109,8 @@ function App() {
         </Routes>
       </main>
     </div>
-
   );
 }
+
 
 export default App;
