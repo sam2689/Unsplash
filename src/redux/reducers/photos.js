@@ -8,6 +8,8 @@ export const initialState = {
   collections: [],
   activeCollection: null,
   user: null,
+  orientation: '',
+  topic: ''
 };
 
 export function photosReducer(state, action) {
@@ -40,6 +42,18 @@ export function photosReducer(state, action) {
 
     case 'NEXT_PAGE':
       return {...state, page: state.page + 1};
+
+    case 'SET_ORIENTATION':
+      return {...state, orientation: action.payload, page: 1, photos: []};
+
+    case 'SET_TOPIC':
+      return {
+        ...state,
+        topic: action.payload,
+        activeCollection: null,
+        page: 1,
+        photos: []
+      };
 
     default:
       return state;

@@ -8,13 +8,32 @@ const api = axios.create({
 });
 
 class Service {
-  static async getPhotos(page = 1, perPage = 20, color = '') {
+
+  // 🔥 Универсальный метод — самый важный
+  static async getPhotosAll({page = 1, perPage = 20, query = '', topic = '', color = '', orientation = ''}) {
+    // Если выбрана тема (topic)
+    if (topic) {
+      return await Service.getPhotosByTopic(topic, page, perPage, color, orientation);
+    }
+
+    // Если есть поиск
+    if (query.trim()) {
+      return await Service.searchPhotos(query, page, perPage, color, orientation);
+    }
+
+    // Если просто загрузка
+    return await Service.getPhotos(page, perPage, color, orientation);
+  }
+
+
+  static async getPhotos(page = 1, perPage = 20, color = '', orientation = '') {
     try {
       const {data} = await api.get("/photos", {
         params: {
           page,
           per_page: perPage,
-          ...(color && {color})
+          ...(color && {color}),
+          ...(orientation && {orientation})
         }
       });
       return data;
@@ -26,13 +45,13 @@ class Service {
 
   static async searchPhotos(query, page = 1, perPage = 20, color = '', orientation = '') {
     try {
-      const { data } = await api.get("/search/photos", {
+      const {data} = await api.get("/search/photos", {
         params: {
           query,
           page,
           per_page: perPage,
-          ...(color && { color }),
-          ...(orientation && { orientation })
+          ...(color && {color}),
+          ...(orientation && {orientation})
         }
       });
       return data.results;
@@ -41,7 +60,6 @@ class Service {
       return [];
     }
   }
-
 
   static async getUser(username) {
     try {
@@ -87,7 +105,6 @@ class Service {
     }
   }
 
-  // Получить фото по теме
   static async getPhotosByTopic(slug, page = 1, perPage = 20, color = '', orientation = '') {
     try {
       const {data} = await api.get(`/topics/${slug}/photos`, {

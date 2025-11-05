@@ -29,6 +29,10 @@ export default function Home() {
         onSearch={handleSearch}
         selectedColor={state.selectedColor}
         onColorChange={(color) => dispatch({type: 'SET_COLOR', payload: color})}
+        selectedOrientation={state.orientation}
+        onOrientationChange={(v) => dispatch({type: 'SET_ORIENTATION', payload: v})}
+        selectedTopic={state.topic}
+        onTopicChange={(v) => dispatch({type: 'SET_TOPIC', payload: v})}
         collections={state.collections}
         onCollectionClick={(id) => dispatch({type: 'SET_ACTIVE_COLLECTION', payload: id})}
         logo={<Logo/>}
