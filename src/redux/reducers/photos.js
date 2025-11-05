@@ -55,6 +55,26 @@ export function photosReducer(state, action) {
         photos: []
       };
 
+    case 'SEARCH_START':
+      return {
+        ...state,
+        query: action.payload,
+        page: 1,
+        photos: [],
+        isLoadingPhotos: true,
+        activeCollection: null,
+        topic: ''
+      };
+
+    case 'CLEAR_SEARCH':
+      return {
+        ...state,
+        query: '',
+        photos: [],
+        page: 1,
+        isLoadingPhotos: true
+      };
+
     default:
       return state;
   }

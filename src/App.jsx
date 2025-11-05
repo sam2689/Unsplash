@@ -16,6 +16,8 @@ import Profile from "./pages/Profile.jsx";
 import EditProfile from "./pages/EditProfile.jsx";
 import DeleteAccount from "./pages/DeleteAccount.jsx";
 import AdminPanel from "./pages/AdminPanel.jsx";
+import Photos from './pages/Photos';
+import Illustrations from "./pages/Illustrations.jsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -104,6 +106,16 @@ function App() {
           <Route path="/admin" element={
             <ProtectedRoute>
               <AdminPanel/>
+            </ProtectedRoute>
+          }/>
+          <Route path="/photos" element={
+            <ProtectedRoute>
+              <Photos/>
+            </ProtectedRoute>
+          }/>
+          <Route path="/illustrations" element={
+            <ProtectedRoute>
+              <Illustrations />
             </ProtectedRoute>
           }/>
         </Routes>

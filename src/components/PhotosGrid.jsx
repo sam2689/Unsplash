@@ -1,4 +1,6 @@
+// components/PhotosGrid.jsx
 import { useRef, useEffect } from 'react';
+import Masonry from 'react-masonry-css';
 import PhotoCard from './PhotoCard';
 
 export default function PhotosGrid({ photos, isLoading, onLoadMore, hasMore }) {
@@ -23,21 +25,41 @@ export default function PhotosGrid({ photos, isLoading, onLoadMore, hasMore }) {
     };
   }, [isLoading, hasMore, onLoadMore]);
 
+  // Конфигурация masonry
+  const breakpointColumnsObj = {
+    default: 4,
+    1100: 3,
+    700: 2,
+    500: 1
+  };
+
   return (
     <section className="p-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {/* Masonry Grid */}
+      <Masonry
+        breakpointCols={breakpointColumnsObj}
+        className="flex -ml-6 w-auto"
+        columnClassName="pl-6 bg-clip-padding"
+      >
         {photos.map((photo) => (
-          <PhotoCard key={photo.id} photo={photo} />
+          <div key={photo.id} className="mb-6">
+            <PhotoCard photo={photo} />
+          </div>
         ))}
 
         {isLoading && photos.length === 0 &&
           [...Array(12)].map((_, i) => (
-            <div key={i} className="animate-pulse">
-              <div className="bg-gray-200 h-64 rounded-lg shadow-md"></div>
+            <div key={i} className="mb-6 animate-pulse">
+              <div
+                className="bg-gray-200 rounded-lg shadow-md"
+                style={{
+                  height: `${200 + (i % 4) * 100}px`
+                }}
+              ></div>
             </div>
           ))
         }
-      </div>
+      </Masonry>
 
       {hasMore && (
         <div ref={loaderRef} className="mt-6 flex justify-center">
