@@ -1,4 +1,3 @@
-// components/PhotosGrid.jsx
 import { useRef, useEffect } from 'react';
 import Masonry from 'react-masonry-css';
 import PhotoCard from './PhotoCard';
@@ -25,7 +24,6 @@ export default function PhotosGrid({ photos, isLoading, onLoadMore, hasMore }) {
     };
   }, [isLoading, hasMore, onLoadMore]);
 
-  // Конфигурация masonry
   const breakpointColumnsObj = {
     default: 4,
     1100: 3,
@@ -35,7 +33,6 @@ export default function PhotosGrid({ photos, isLoading, onLoadMore, hasMore }) {
 
   return (
     <section className="p-6">
-      {/* Masonry Grid */}
       <Masonry
         breakpointCols={breakpointColumnsObj}
         className="flex -ml-6 w-auto"

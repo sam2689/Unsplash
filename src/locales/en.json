@@ -1,0 +1,45 @@
+
+{
+  "nav": {
+    "home": "Home",
+    "photos": "Photos",
+    "illustrations": "Illustrations",
+    "collections": "Collections",
+    "favorites": "Favorites",
+    "admin": "Admin",
+    "profile": "Profile",
+    "logout": "Log out",
+    "viewProfile": "View profile"
+  },
+  "auth": {
+    "login": "Sign in",
+    "register": "Sign up",
+    "logout": "Log out",
+    "username": "Username",
+    "password": "Password",
+    "email": "Email",
+    "firstName": "First Name",
+    "lastName": "Last Name"
+  },
+  "common": {
+    "loading": "Loading...",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "save": "Save",
+    "search": "Search...",
+    "download": "Download",
+    "like": "Like"
+  },
+  "theme": {
+    "dark": "Dark",
+    "light": "Light"
+  },
+  "language": {
+    "en": "English",
+    "ru": "Russian"
+  },
+  "favorites": {
+    "title": "Favorites",
+    "empty": "You haven't added anything to your favorites yet."
+  }
+}

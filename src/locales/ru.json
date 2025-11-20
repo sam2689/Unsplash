@@ -1,0 +1,45 @@
+
+{
+  "nav": {
+    "home": "Главная",
+    "photos": "Фото",
+    "illustrations": "Иллюстрации",
+    "collections": "Коллекции",
+    "favorites": "Избранное",
+    "admin": "Админка",
+    "profile": "Профиль",
+    "logout": "Выйти",
+    "viewProfile": "Посмотреть профиль"
+  },
+  "auth": {
+    "login": "Войти",
+    "register": "Регистрация",
+    "logout": "Выйти",
+    "username": "Имя пользователя",
+    "password": "Пароль",
+    "email": "Email",
+    "firstName": "Имя",
+    "lastName": "Фамилия"
+  },
+  "common": {
+    "loading": "Загрузка...",
+    "confirm": "Подтвердить",
+    "cancel": "Отмена",
+    "save": "Сохранить",
+    "search": "Поиск...",
+    "download": "Скачать",
+    "like": "Нравится"
+  },
+  "theme": {
+    "dark": "Тёмная",
+    "light": "Светлая"
+  },
+  "language": {
+    "en": "Английский",
+    "ru": "Русский"
+  },
+  "favorites": {
+    "title": "Избранное",
+    "empty": "Вы еще ничего не добавили в избранное."
+  }
+}

@@ -1,27 +1,38 @@
-// components/PhotoCard.jsx
 import {useState} from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { toggleFavorite } from "../redux/reducers/favorites";
 import Modal from './Modal';
 import Star from '../assets/icons/Star.svg?react';
 import Download from '../assets/icons/download.svg?react';
+import DownloadModal from './DownloadModal';
 
 export default function PhotoCard({photo, allPhotos}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showButtons, setShowButtons] = useState(false);
   const dispatch = useDispatch();
   const favorites = useSelector((state) => state.favorites.items);
+  const currentUserId = useSelector((state) => state.favorites.currentUserId);
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn); // Добавьте эту строку
   const isFav = favorites.some((f) => f.id === photo.id);
+  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
 
   const handleDownload = (e) => {
     e.stopPropagation();
-    window.open(photo.links.download, '_blank');
+    setIsDownloadModalOpen(true);
   };
 
   const handleFavorite = (e) => {
     e.stopPropagation();
+
+    if (!isLoggedIn || !currentUserId) {
+      alert("Please log in to add favorites");
+      return;
+    }
+
     dispatch(toggleFavorite(photo));
   };
+
+
 
   return (
     <>
@@ -42,17 +53,15 @@ export default function PhotoCard({photo, allPhotos}) {
             }}
           />
 
-          {/* Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"/>
 
-          {/* Кнопки поверх картинки */}
           <div className={`absolute top-3 right-3 flex space-x-2 transition-all duration-300 ${
             showButtons ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
           }`}>
             <button
               onClick={handleFavorite}
               className="bg-white/90 hover:bg-white backdrop-blur-sm rounded-full p-2 shadow-lg transition-all duration-200 hover:scale-110"
-              title="Add to favorites"
+              title={isLoggedIn ? "Add to favorites" : "Log in to add favorites"}
             >
               <Star
                 className="w-4 h-4"
@@ -69,9 +78,10 @@ export default function PhotoCard({photo, allPhotos}) {
             >
               <Download className="w-4 h-4" />
             </button>
+
+
           </div>
 
-          {/* Информация о пользователе внизу */}
           <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
@@ -86,6 +96,7 @@ export default function PhotoCard({photo, allPhotos}) {
                 <button
                   onClick={handleFavorite}
                   className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors"
+                  title={isLoggedIn ? "Add to favorites" : "Log in to add favorites"}
                 >
                   <Star
                     className="w-3 h-3"
@@ -99,6 +110,12 @@ export default function PhotoCard({photo, allPhotos}) {
           </div>
         </div>
       </div>
+
+      <DownloadModal
+        isOpen={isDownloadModalOpen}
+        onClose={() => setIsDownloadModalOpen(false)}
+        photo={photo}
+      />
 
       <Modal
         isOpen={isModalOpen}

@@ -152,6 +152,98 @@ class LoginService {
       throw error;
     }
   }
+
+  static async requestPasswordReset(email) {
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+      const user = registeredUsers.find(u => u.email === email);
+
+      if (!user) {
+        throw new Error('User with this email not found');
+      }
+
+      const resetToken = `reset-token-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+      const resetRequests = JSON.parse(localStorage.getItem('passwordResetRequests') || '[]');
+      resetRequests.push({
+        email,
+        token: resetToken,
+        expiresAt: Date.now() + 3600000,
+        used: false
+      });
+      localStorage.setItem('passwordResetRequests', JSON.stringify(resetRequests));
+
+      console.log(`Password reset link: http://yourapp.com/reset-password?token=${resetToken}`);
+
+      return {
+        success: true,
+        message: 'Password reset instructions sent to your email',
+        demoToken: resetToken
+      };
+    } catch (error) {
+      console.error("Password reset error:", error);
+      throw error;
+    }
+  }
+
+  static async resetPassword(token, newPassword) {
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const resetRequests = JSON.parse(localStorage.getItem('passwordResetRequests') || '[]');
+      const resetRequest = resetRequests.find(req => req.token === token && !req.used);
+
+      if (!resetRequest) {
+        throw new Error('Invalid or expired reset token');
+      }
+
+      if (Date.now() > resetRequest.expiresAt) {
+        throw new Error('Reset token has expired');
+      }
+
+      if (newPassword.length < 6) {
+        throw new Error('Password must be at least 6 characters');
+      }
+
+      const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+      const userIndex = registeredUsers.findIndex(u => u.email === resetRequest.email);
+
+      if (userIndex === -1) {
+        throw new Error('User not found');
+      }
+
+      registeredUsers[userIndex].password = newPassword;
+      localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+
+      resetRequest.used = true;
+      localStorage.setItem('passwordResetRequests', JSON.stringify(resetRequests));
+
+      return {
+        success: true,
+        message: 'Password has been reset successfully'
+      };
+    } catch (error) {
+      console.error("Reset password error:", error);
+      throw error;
+    }
+  }
+
+  static validateResetToken(token) {
+    const resetRequests = JSON.parse(localStorage.getItem('passwordResetRequests') || '[]');
+    const resetRequest = resetRequests.find(req => req.token === token && !req.used);
+
+    if (!resetRequest) {
+      return {valid: false, message: 'Invalid or expired reset token'};
+    }
+
+    if (Date.now() > resetRequest.expiresAt) {
+      return {valid: false, message: 'Reset token has expired'};
+    }
+
+    return {valid: true, email: resetRequest.email};
+  }
 }
 
 export default LoginService;

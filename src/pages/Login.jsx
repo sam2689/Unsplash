@@ -66,10 +66,13 @@ const Login = () => {
       localStorage.setItem('token', data.accessToken || data.token);
       localStorage.setItem('user', JSON.stringify(data));
 
+      // ВАЖНО: Сначала диспатчим успешный логин, потом настройку избранного
       dispatch(loginSuccess({
         user: data,
         token: data.accessToken || data.token
       }));
+
+      // Загружаем избранное для этого пользователя
       dispatch(setUserFavorites(data.id));
 
       navigate('/home', {replace: true});
@@ -80,89 +83,123 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white shadow-lg rounded-lg p-8 w-full max-w-sm "
-      >
-        <div className="flex justify-center mb-4">
-          <Logo className="w-16 h-16"/>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+      <div className="max-w-md w-full">
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+          <div className="text-center mb-8">
+            <div className="flex justify-center mb-4">
+              <Logo className="w-12 h-12 text-blue-600" />
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome back</h1>
+            <p className="text-gray-600">Sign in to your Unsplash account</p>
+          </div>
 
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Login</h2>
-
-        {state.loginError && (
-          <div className="mb-4 text-red-600 text-sm font-medium">{state.loginError}</div>
-        )}
-
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="username">
-            Username
-          </label>
-          <input
-            id="username"
-            name="username"
-            value={state.formData.username}
-            onChange={handleChange}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
-              state.errors.username
-                ? 'border-red-500 focus:ring-red-400'
-                : 'border-gray-300 focus:ring-blue-400'
-            }`}
-          />
-          {state.errors.username && (
-            <p className="text-red-500 text-xs mt-1">{state.errors.username}</p>
+          {state.loginError && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
+              {state.loginError}
+            </div>
           )}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Username
+              </label>
+              <input
+                id="username"
+                name="username"
+                value={state.formData.username}
+                onChange={handleChange}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition ${
+                  state.errors.username
+                    ? 'border-red-500 bg-red-50'
+                    : 'border-gray-300 hover:border-gray-400'
+                }`}
+                placeholder="Enter your username"
+              />
+              {state.errors.username && (
+                <p className="text-red-500 text-xs mt-2 flex items-center">
+                  <span className="mr-1">⚠</span>
+                  {state.errors.username}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  id="password"
+                  type={state.showPassword ? "text" : "password"}
+                  name="password"
+                  value={state.formData.password}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition pr-12 ${
+                    state.errors.password
+                      ? 'border-red-500 bg-red-50'
+                      : 'border-gray-300 hover:border-gray-400'
+                  }`}
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setState(prev => ({...prev, showPassword: !prev.showPassword}))}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition"
+                >
+                  {state.showPassword ? "🙈" : "👁️"}
+                </button>
+              </div>
+              {state.errors.password && (
+                <p className="text-red-500 text-xs mt-2 flex items-center">
+                  <span className="mr-1">⚠</span>
+                  {state.errors.password}
+                </p>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              disabled={state.loading}
+              className="w-full bg-blue-600 text-white py-3 px-4 rounded-xl font-medium hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+            >
+              {state.loading ? (
+                <div className="flex items-center justify-center">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                  Signing in...
+                </div>
+              ) : (
+                'Sign in'
+              )}
+            </button>
+          </form>
+          <div className="text-center mt-4">
+            <NavLink
+              to="/forgot-password"
+              className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors"
+            >
+              Forgot your password?
+            </NavLink>
+          </div>
+
+          <div className="my-6 flex items-center">
+            <div className="flex-1 border-t border-gray-300"></div>
+            <span className="px-4 text-gray-500 text-sm">or</span>
+            <div className="flex-1 border-t border-gray-300"></div>
+          </div>
+
+          <div className="mt-8 text-center">
+            <span className="text-gray-600">Don't have an account? </span>
+            <NavLink
+              to="/register"
+              className="text-blue-600 hover:text-blue-700 font-medium transition-colors"
+            >
+              Sign up
+            </NavLink>
+          </div>
         </div>
-
-        <div className="mb-6 relative">
-          <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="password">
-            Password
-          </label>
-          <input
-            id="password"
-            type={state.showPassword ? "text" : "password"}
-            name="password"
-            value={state.formData.password}
-            onChange={handleChange}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 pr-10 ${
-              state.errors.password
-                ? 'border-red-500 focus:ring-red-400'
-                : 'border-gray-300 focus:ring-blue-400'
-            }`}
-          />
-
-          <button
-            type="button"
-            onClick={() => setState(prev => ({...prev, showPassword: !prev.showPassword}))}
-            className="absolute right-3 top-9 text-gray-500 hover:text-gray-700 focus:outline-none"
-          >
-            {state.showPassword ? "🙈" : "👁️"}
-          </button>
-
-          {state.errors.password && (
-            <p className="text-red-500 text-xs mt-1">{state.errors.password}</p>
-          )}
-        </div>
-
-        <button
-          type="submit"
-          disabled={state.loading}
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-600 disabled:bg-blue-300 transition"
-        >
-          {state.loading ? 'Loading...' : 'Login'}
-        </button>
-
-        <div className="mt-4 text-center text-sm text-gray-600">
-          Don't have an account?{' '}
-          <NavLink
-            to="/register"
-            className="text-blue-500 hover:underline"
-          >
-            Register
-          </NavLink>
-        </div>
-      </form>
+      </div>
     </div>
   );
 };

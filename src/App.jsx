@@ -1,4 +1,4 @@
-import {Routes, Route} from 'react-router-dom';
+import {Routes, Route, useLocation} from 'react-router-dom';
 import Home from './pages/Home';
 import User from "./pages/User.jsx";
 import CollectionDetailPage from "./pages/CollectionDetails.jsx";
@@ -9,7 +9,7 @@ import Sidebar from "./components/Sidebar.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import PublicRoute from "./components/PublicRoute.jsx";
 import Register from "./pages/Register.jsx";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
 import {restoreAuth} from "./redux/reducers/auth.js";
 import Profile from "./pages/Profile.jsx";
@@ -18,9 +18,20 @@ import DeleteAccount from "./pages/DeleteAccount.jsx";
 import AdminPanel from "./pages/AdminPanel.jsx";
 import Photos from './pages/Photos';
 import Illustrations from "./pages/Illustrations.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
+import ResetPassword from "./pages/ResetPassword.jsx";
+import {setUserFavorites} from "./redux/reducers/favorites.js";
+import { useTheme } from './hooks/useTheme';
 
 function App() {
   const dispatch = useDispatch();
+  const location = useLocation();
+  const { user } = useSelector(state => state.auth);
+  const { isDark } = useTheme();
+
+  const publicRoutes = ['/', '/register', '/forgot-password', '/reset-password'];
+  const isPublicRoute = publicRoutes.includes(location.pathname);
+  const showSidebar = user && !isPublicRoute;
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -34,6 +45,7 @@ function App() {
             user: user,
             token: token
           }));
+          dispatch(setUserFavorites(user.id));
         } else {
           localStorage.removeItem("user");
           localStorage.removeItem("token");
@@ -47,11 +59,11 @@ function App() {
 
   return (
     <div className="flex h-screen">
-      {/* Sidebar слева */}
-      <Sidebar/>
+      {showSidebar && <Sidebar/>}
 
-      {/* Основной контент справа */}
-      <main className='flex-1 overflow-auto bg-gray-100'>
+      <main className={`${showSidebar ? 'flex-1' : 'w-full'} overflow-auto transition-colors duration-300 ${
+        isDark ? 'bg-gray-900' : 'bg-gray-100'
+      }`}>
         <Routes>
           <Route path="/" element={
             <PublicRoute>
@@ -63,6 +75,9 @@ function App() {
               <Register/>
             </PublicRoute>
           }/>
+          <Route path="/forgot-password" element={<ForgotPassword/>}/>
+          <Route path="/reset-password" element={<ResetPassword />}/>
+
           <Route path="/home" element={
             <ProtectedRoute>
               <Home/>
@@ -123,6 +138,5 @@ function App() {
     </div>
   );
 }
-
 
 export default App;

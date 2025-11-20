@@ -3,10 +3,12 @@ import {useNavigate, useParams} from 'react-router-dom';
 import Service from '../API/api.js';
 import PhotosGrid from '../components/PhotosGrid.jsx';
 import Logo from '../assets/icons/logo.svg?react';
+import { useTheme } from '../hooks/useTheme';
 
 export default function CollectionDetailPage() {
   const {id} = useParams();
   const navigate = useNavigate();
+  const { isDark } = useTheme();
 
   const [state, setState] = useState({
     photos: [],
@@ -51,13 +53,17 @@ export default function CollectionDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className={`min-h-screen transition-colors duration-300 ${
+      isDark ? 'bg-gray-900' : 'bg-white'
+    }`}>
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center mb-4">
           <button onClick={() => navigate('/home')}>
-            <Logo/>
+            <Logo className={isDark ? 'text-white' : 'text-gray-900'}/>
           </button>
-          <h1 className="text-3xl font-bold mx-4">Collection Photos</h1>
+          <h1 className={`text-3xl font-bold mx-4 ${
+            isDark ? 'text-white' : 'text-gray-900'
+          }`}>Collection Photos</h1>
         </div>
         <PhotosGrid
           photos={state.photos}

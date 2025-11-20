@@ -10,3 +10,22 @@
     display: none;
 }
 
+html {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.icon-light {
+    color: #6b7280;
+}
+
+.icon-dark {
+    color: #d1d5db;
+}
+
+.icon-light:hover {
+    color: #374151;
+}
+
+.icon-dark:hover {
+    color: #f9fafb;
+}

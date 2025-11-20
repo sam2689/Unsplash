@@ -1,4 +1,3 @@
-// components/FeaturedTopics.jsx
 import React from 'react';
 
 const FeaturedTopics = ({ onTopicClick }) => {
@@ -20,7 +19,7 @@ const FeaturedTopics = ({ onTopicClick }) => {
       {topics.map((topic, index) => (
         <div
           key={index}
-          onClick={() => onTopicClick(topic.searchTerm)} // Передаем searchTerm, а не name
+          onClick={() => onTopicClick(topic.searchTerm)}
           className="bg-white border border-gray-200 rounded-lg p-6 cursor-pointer hover:shadow-md transition-shadow duration-300"
         >
           <h3 className="font-semibold text-gray-900 text-lg mb-2">{topic.name}</h3>

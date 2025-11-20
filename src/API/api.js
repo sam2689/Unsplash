@@ -9,19 +9,15 @@ const api = axios.create({
 
 class Service {
 
-  // 🔥 Универсальный метод — самый важный
   static async getPhotosAll({page = 1, perPage = 20, query = '', topic = '', color = '', orientation = ''}) {
-    // Если выбрана тема (topic)
     if (topic) {
       return await Service.getPhotosByTopic(topic, page, perPage, color, orientation);
     }
 
-    // Если есть поиск
     if (query.trim()) {
       return await Service.searchPhotos(query, page, perPage, color, orientation);
     }
 
-    // Если просто загрузка
     return await Service.getPhotos(page, perPage, color, orientation);
   }
 
@@ -93,16 +89,6 @@ class Service {
       params: {page, per_page: perPage}
     });
     return data;
-  }
-
-  static async getTopics(perPage = 30) {
-    try {
-      const {data} = await api.get('/topics', {params: {per_page: perPage}});
-      return data;
-    } catch (error) {
-      console.error('Error fetching topics:', error);
-      throw error;
-    }
   }
 
   static async getPhotosByTopic(slug, page = 1, perPage = 20, color = '', orientation = '') {

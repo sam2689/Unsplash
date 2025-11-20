@@ -4,6 +4,7 @@ import LoginService from "../API/login.js";
 import Loader from "../components/Loader.jsx";
 import ConfirmModal from '../components/ConfirmModal.jsx'
 import {toast} from "react-toastify";
+import { useTheme } from '../hooks/useTheme';
 
 export default function AdminPanel() {
   const currentUser = useSelector(state => state.auth.user);
@@ -13,6 +14,7 @@ export default function AdminPanel() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
   const [updatingUsers, setUpdatingUsers] = useState({});
+  const { isDark } = useTheme();
 
   useEffect(() => {
     if (currentUser?.role === 'admin') {
@@ -81,7 +83,11 @@ export default function AdminPanel() {
 
   if (currentUser?.role !== 'admin') {
     return (
-      <div className="max-w-md mx-auto mt-8 bg-white p-6 rounded shadow text-center">
+      <div className={`max-w-md mx-auto mt-8 p-6 rounded shadow text-center transition-colors duration-300 ${
+        isDark
+          ? 'bg-gray-800 text-white'
+          : 'bg-white text-gray-900'
+      }`}>
         <h2 className="text-xl font-bold text-red-600 mb-4">Access Denied</h2>
         <p>You need administrator privileges to access this page.</p>
       </div>
@@ -93,13 +99,19 @@ export default function AdminPanel() {
   }
 
   return (
-    <div className="container mx-auto mt-8 p-4">
+    <div className={`container mx-auto mt-8 p-4 transition-colors duration-300 ${
+      isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'
+    }`}>
       <h2 className="text-2xl font-bold mb-4">Admin Panel - User Management</h2>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-200">
+        <table className={`min-w-full border transition-colors duration-300 ${
+          isDark
+            ? 'bg-gray-800 border-gray-700'
+            : 'bg-white border-gray-200'
+        }`}>
           <thead>
-          <tr className="bg-gray-100">
+          <tr className={isDark ? 'bg-gray-700' : 'bg-gray-100'}>
             <th className="px-4 py-2 border-b">ID</th>
             <th className="px-4 py-2 border-b">Avatar</th>
             <th className="px-4 py-2 border-b">Username</th>
@@ -111,7 +123,7 @@ export default function AdminPanel() {
           </thead>
           <tbody>
           {users.map(user => (
-            <tr key={user.id} className="hover:bg-gray-50">
+            <tr key={user.id} className={isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}>
               <td className="px-4 py-2 border-b">{user.id}</td>
               <td className="px-4 py-2 border-b">
                 <img
@@ -132,7 +144,11 @@ export default function AdminPanel() {
                   <select
                     value={user.role || 'user'}
                     onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                    className="border rounded p-1"
+                    className={`border rounded p-1 ${
+                      isDark
+                        ? 'bg-gray-700 border-gray-600 text-white'
+                        : 'border-gray-300'
+                    }`}
                     disabled={updatingUsers[user.id]}
                   >
                     <option value="user">User</option>

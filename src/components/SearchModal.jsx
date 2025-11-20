@@ -1,10 +1,8 @@
-// components/SearchModal.jsx
 import React, {useState, useEffect} from 'react';
 
 const SearchModal = ({isOpen, onClose, onSearch, currentQuery}) => {
   const [searchTerm, setSearchTerm] = useState(currentQuery || '');
 
-  // Данные как в реальном Unsplash
   const recentSearches = [
     'car',
     'white image of people in facebook',
@@ -49,11 +47,9 @@ const SearchModal = ({isOpen, onClose, onSearch, currentQuery}) => {
 
   const handleSearch = (term) => {
     if (term.trim()) {
-      // Сохраняем в историю поиска
       const updatedRecent = [term, ...recentSearches.filter(item => item !== term)].slice(0, 5);
       localStorage.setItem('recentSearches', JSON.stringify(updatedRecent));
 
-      // Вызываем переданную функцию поиска (ваш handleSearch с debounce)
       onSearch(term);
     }
     onClose();
@@ -80,7 +76,6 @@ const SearchModal = ({isOpen, onClose, onSearch, currentQuery}) => {
         className="bg-white rounded-xl w-full max-w-4xl mx-4 shadow-2xl max-h-[80vh] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Search Input */}
         <div className="p-6 border-b border-gray-100">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -101,9 +96,7 @@ const SearchModal = ({isOpen, onClose, onSearch, currentQuery}) => {
           </div>
         </div>
 
-        {/* Content */}
         <div className="p-6 overflow-y-auto max-h-[60vh]">
-          {/* Recent Searches */}
           <div className="mb-8">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-sm font-medium text-gray-900">Recent Searches</h3>
@@ -132,7 +125,6 @@ const SearchModal = ({isOpen, onClose, onSearch, currentQuery}) => {
             </div>
           </div>
 
-          {/* Trending Searches */}
           <div className="mb-8">
             <h3 className="text-sm font-medium text-gray-900 mb-4">Trending Searches</h3>
             <div className="space-y-2">
@@ -148,7 +140,6 @@ const SearchModal = ({isOpen, onClose, onSearch, currentQuery}) => {
             </div>
           </div>
 
-          {/* Trending Topics */}
           <div className="mb-8">
             <h3 className="text-sm font-medium text-gray-900 mb-4">Trending Topics</h3>
             <div className="space-y-2">
@@ -165,7 +156,6 @@ const SearchModal = ({isOpen, onClose, onSearch, currentQuery}) => {
             </div>
           </div>
 
-          {/* Trending Collections */}
           <div className="mb-8">
             <h3 className="text-sm font-medium text-gray-900 mb-4">Trending Collections</h3>
             <div className="space-y-2">

@@ -9,7 +9,6 @@ export function usePhotos() {
   const searchTimeoutRef = useRef(null);
   const navigate = useNavigate();
 
-  // Проверяем токен и получаем юзера
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -27,13 +26,11 @@ export function usePhotos() {
     })();
   }, []);
 
-  // 📌 Универсальный загрузчик
   const loadPhotos = useCallback(async (pageNum = 1, reset = false) => {
     dispatch({type: 'LOAD_START'});
     try {
       let data = [];
 
-      // Если выбрана коллекция — она главнее всего
       if (state.activeCollection) {
         data = await Service.getCollectionPhotos(state.activeCollection, pageNum, 20);
       } else {
@@ -54,12 +51,10 @@ export function usePhotos() {
     }
   }, [state.query, state.selectedColor, state.activeCollection, state.orientation, state.topic]);
 
-  // Загружаем при изменении фильтров
   useEffect(() => {
     loadPhotos(1, true);
   }, [state.selectedColor, state.query, state.activeCollection, state.orientation, state.topic, loadPhotos]);
 
-  // Загружаем коллекции (для UI)
   useEffect(() => {
     (async () => {
       try {
@@ -71,7 +66,6 @@ export function usePhotos() {
     })();
   }, []);
 
-  // Поиск с debounce
   const handleSearch = (q) => {
     if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
     searchTimeoutRef.current = setTimeout(() => {
@@ -79,7 +73,6 @@ export function usePhotos() {
     }, 500);
   };
 
-  // Загрузка следующей страницы
   const handleLoadMore = () => {
     if (!state.isLoadingPhotos && state.hasMore) {
       dispatch({type: 'NEXT_PAGE'});

@@ -12,16 +12,22 @@ const favoritesSlice = createSlice({
   name: "favorites",
   initialState: {
     items: [],
-    userId: null,
+    currentUserId: null,
   },
   reducers: {
     setUserFavorites: (state, action) => {
       const userId = action.payload;
-      state.userId = userId;
+      state.currentUserId = userId;
       state.items = getUserFavorites(userId);
     },
     toggleFavorite: (state, action) => {
       const photo = action.payload;
+
+      if (!state.currentUserId) {
+        console.error("No user ID set for favorites");
+        return state;
+      }
+
       const exists = state.items.find((f) => f.id === photo.id);
 
       if (exists) {
@@ -30,18 +36,14 @@ const favoritesSlice = createSlice({
         state.items.push(photo);
       }
 
-      if (state.userId) {
-        saveUserFavorites(state.userId, state.items);
-      }
+      saveUserFavorites(state.currentUserId, state.items);
     },
-    clearFavorites: (state) => {
-      if (state.userId) {
-        localStorage.removeItem(`favorites_${state.userId}`);
-      }
+    clearCurrentFavorites: (state) => {
       state.items = [];
+      state.currentUserId = null;
     },
   },
 });
 
-export const { setUserFavorites, toggleFavorite} = favoritesSlice.actions;
+export const { setUserFavorites, toggleFavorite, clearCurrentFavorites } = favoritesSlice.actions;
 export default favoritesSlice.reducer;
