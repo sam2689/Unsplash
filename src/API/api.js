@@ -9,7 +9,8 @@ const api = axios.create({
 
 class Service {
 
-  static async getPhotosAll({page = 1, perPage = 20, query = '', topic = '', color = '', orientation = ''}) {
+  static async getPhotosAll({ page = 1, perPage = 20, query = '', topic = '', color = '', orientation = '' }) {
+
     if (topic) {
       return await Service.getPhotosByTopic(topic, page, perPage, color, orientation);
     }
@@ -18,8 +19,13 @@ class Service {
       return await Service.searchPhotos(query, page, perPage, color, orientation);
     }
 
+    if (color || orientation) {
+      return await Service.searchPhotos("all", page, perPage, color, orientation);
+    }
+
     return await Service.getPhotos(page, perPage, color, orientation);
   }
+
 
 
   static async getPhotos(page = 1, perPage = 20, color = '', orientation = '') {
@@ -105,6 +111,23 @@ class Service {
     } catch (error) {
       console.error('Error fetching topic photos:', error);
       throw error;
+    }
+  }
+
+  static async searchCollections(query, page = 1, perPage = 20) {
+    if (!query.trim()) return [];
+    try {
+      const { data } = await api.get('/search/collections', {
+        params: {
+          query,
+          page,
+          per_page: perPage
+        }
+      });
+      return data.results; // массив коллекций
+    } catch (error) {
+      console.error('Error searching collections:', error);
+      return [];
     }
   }
 }

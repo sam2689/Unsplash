@@ -4,12 +4,13 @@ import { useIllustrations } from "../hooks/useIllustrations";
 import PhotosGrid from "../components/PhotosGrid.jsx";
 import Loader from "../components/Loader.jsx";
 import SearchModal from "../components/SearchModal.jsx";
+import ColorFilter from "../components/ColorFilter.jsx";
 import Logo from '../assets/icons/logo.svg?react';
 import { useTheme } from '../hooks/useTheme';
 import Search from '../assets/icons/Search.svg?react'
 
 export default function Illustrations() {
-  const { state, handleSearch, handleLoadMore } = useIllustrations();
+  const { state, handleSearch, handleLoadMore, handleColorChange } = useIllustrations();
   const location = useLocation();
   const navigate = useNavigate();
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
@@ -60,7 +61,7 @@ export default function Illustrations() {
     <div className={`min-h-screen transition-colors duration-300 ${
       isDark ? 'bg-gray-900' : 'bg-white'
     }`}>
-      {state.isLoadingPhotos && state.page === 1 && <Loader />}
+      {state.isLoadingPhotos && state.photos.length === 0 && <Loader />}
 
       <section className={`relative py-20 px-6 transition-colors duration-300 ${
         isDark
@@ -189,6 +190,13 @@ export default function Illustrations() {
         </div>
       </section>
 
+      <div className="mb-6 px-6 flex justify-center">
+        <ColorFilter
+          value={state.selectedColor}
+          onChange={handleColorChange}
+        />
+      </div>
+
       <section className="py-8 px-6">
         <div className="max-w-6xl mx-auto">
           {state.query && getDisplayQuery() !== 'illustration' && (
@@ -210,6 +218,20 @@ export default function Illustrations() {
             onLoadMore={handleLoadMore}
             hasMore={state.hasMore}
           />
+
+          {/* Добавляем проверку на пустые результаты */}
+          {state.photos.length === 0 &&
+            !state.isLoadingPhotos &&
+            (state.query || state.selectedColor) && (
+              <div className="text-center py-16">
+                <h3 className={`text-xl font-medium mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  No illustrations found
+                </h3>
+                <p className={isDark ? 'text-gray-400' : 'text-gray-500'}>
+                  Try adjusting your search or filters
+                </p>
+              </div>
+            )}
         </div>
       </section>
 

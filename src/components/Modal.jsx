@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import { useDispatch, useSelector } from "react-redux";
-import { toggleFavorite } from "../redux/reducers/favorites";
+import {useEffect, useState} from 'react';
+import {NavLink} from 'react-router-dom';
+import {useDispatch, useSelector} from "react-redux";
+import {toggleFavorite} from "../redux/reducers/favorites";
 import Star from '../assets/icons/Star.svg?react';
 import Download from '../assets/icons/download.svg?react';
 import DownloadModal from './DownloadModal';
 
-export default function Modal({ isOpen, onClose, photo, photos = [] }) {
+export default function Modal({isOpen, onClose, photo, photos = []}) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const dispatch = useDispatch();
@@ -140,27 +140,33 @@ export default function Modal({ isOpen, onClose, photo, photos = [] }) {
             <div className="md:w-80 lg:w-96 p-6 border-l bg-white overflow-y-auto">
               {currentPhoto.description && (
                 <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Description</h3>
-                  <p className="text-gray-700 leading-relaxed">{currentPhoto.description}</p>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-3">Description</h3>
+                  <p className="text-[1.05rem] text-gray-800 leading-relaxed">
+                    {currentPhoto.description}
+                  </p>
                 </div>
               )}
 
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-1">Dimensions</h4>
-                  <p className="text-gray-900">{currentPhoto.width} × {currentPhoto.height}</p>
+                  <h4 className="text-base font-medium text-gray-500 mb-1">Dimensions</h4>
+                  <p className="text-lg text-gray-900">
+                    {currentPhoto.width} × {currentPhoto.height}
+                  </p>
                 </div>
 
                 {currentPhoto.exif?.make && (
                   <div>
-                    <h4 className="text-sm font-medium text-gray-500 mb-1">Camera</h4>
-                    <p className="text-gray-900">{currentPhoto.exif.make} {currentPhoto.exif.model}</p>
+                    <h4 className="text-base font-medium text-gray-500 mb-1">Camera</h4>
+                    <p className="text-lg text-gray-900">
+                      {currentPhoto.exif.make} {currentPhoto.exif.model}
+                    </p>
                   </div>
                 )}
 
                 <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-1">Published</h4>
-                  <p className="text-gray-900">
+                  <h4 className="text-base font-medium text-gray-500 mb-1">Published</h4>
+                  <p className="text-lg text-gray-900">
                     {new Date(currentPhoto.created_at).toLocaleDateString('en-US', {
                       year: 'numeric',
                       month: 'long',
@@ -171,20 +177,21 @@ export default function Modal({ isOpen, onClose, photo, photos = [] }) {
 
                 {currentPhoto.tags && currentPhoto.tags.length > 0 && (
                   <div>
-                    <h4 className="text-sm font-medium text-gray-500 mb-2">Tags</h4>
+                    <h4 className="text-base font-medium text-gray-500 mb-2">Tags</h4>
                     <div className="flex flex-wrap gap-2">
                       {currentPhoto.tags.slice(0, 8).map((tag, index) => (
                         <span
                           key={index}
-                          className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs"
+                          className="px-2 py-1 bg-gray-100 text-gray-800 rounded text-sm"
                         >
-                          {tag.title}
-                        </span>
+            {tag.title}
+          </span>
                       ))}
                     </div>
                   </div>
                 )}
               </div>
+
 
               <div className="mt-8 pt-6 border-t">
                 <div className="flex space-x-3">
@@ -192,7 +199,7 @@ export default function Modal({ isOpen, onClose, photo, photos = [] }) {
                     onClick={handleDownload}
                     className="flex-1 flex items-center justify-center space-x-2 py-3 border border-gray-300 rounded-lg hover:border-gray-400 transition-colors"
                   >
-                    <Download className="w-4 h-4" />
+                    <Download className="w-4 h-4"/>
                     <span className="text-sm font-medium">Download</span>
                   </button>
 

@@ -35,6 +35,15 @@ export default function ForgotPassword() {
     }
   };
 
+  // Функция для перехода к сбросу пароля
+  const handleContinueToReset = () => {
+    if (state.demoToken) {
+      // Сохраняем токен в localStorage для проверки
+      localStorage.setItem('resetToken', state.demoToken);
+      navigate('/reset-password');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
@@ -93,13 +102,13 @@ export default function ForgotPassword() {
           {state.step === 'instructions' && (
             <div className="text-center">
               <div className="mb-4 p-4 bg-blue-50 rounded-xl">
-                <p className="text-blue-700">
+                <p className="text-blue-700 mb-4">
                   Check your email for reset instructions.
                 </p>
                 {state.demoToken && (
                   <button
-                    onClick={() => navigate(`/reset-password?token=${state.demoToken}`)}
-                    className="mt-2 text-orange-600 hover:text-orange-700 font-medium"
+                    onClick={handleContinueToReset}
+                    className="w-full bg-orange-600 text-white py-3 px-4 rounded-xl font-medium hover:bg-orange-700 transition-colors"
                   >
                     Continue to Reset Password (Demo)
                   </button>

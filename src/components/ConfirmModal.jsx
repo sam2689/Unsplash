@@ -13,7 +13,8 @@ const ConfirmModal = ({
   const typeConfig = {
     danger: {
       icon: (
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
       ),
       iconColor: "text-red-500",
       iconBg: "bg-red-50",
@@ -22,7 +23,8 @@ const ConfirmModal = ({
     },
     warning: {
       icon: (
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
       ),
       iconColor: "text-yellow-500",
       iconBg: "bg-yellow-50",
@@ -31,7 +33,8 @@ const ConfirmModal = ({
     },
     info: {
       icon: (
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
       ),
       iconColor: "text-blue-500",
       iconBg: "bg-blue-50",
@@ -40,7 +43,8 @@ const ConfirmModal = ({
     },
     success: {
       icon: (
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
       ),
       iconColor: "text-green-500",
       iconBg: "bg-green-50",
@@ -52,8 +56,14 @@ const ConfirmModal = ({
   const config = typeConfig[type] || typeConfig.danger;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full mx-auto transform transition-all duration-300 scale-100">
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      onClick={onCancel}             // ⬅ Клик по фону закрывает
+    >
+      <div
+        className="bg-white rounded-2xl shadow-xl max-w-md w-full mx-auto transform transition-all duration-300 scale-100"
+        onClick={(e) => e.stopPropagation()}  // ⬅ Не закрывать при клике внутри окна
+      >
         {/* Header */}
         <div className="flex items-center p-6 border-b border-gray-100">
           <div className={`flex items-center justify-center w-10 h-10 ${config.iconBg} rounded-lg mr-4`}>
@@ -61,9 +71,7 @@ const ConfirmModal = ({
               {config.icon}
             </svg>
           </div>
-          <div>
-            <h3 className={`text-xl font-semibold ${config.titleColor}`}>{title}</h3>
-          </div>
+          <h3 className={`text-xl font-semibold ${config.titleColor}`}>{title}</h3>
         </div>
 
         <div className="p-6">
@@ -77,6 +85,7 @@ const ConfirmModal = ({
           >
             {cancelText}
           </button>
+
           <button
             onClick={onConfirm}
             className={`flex-1 ${config.buttonColor} text-white py-3 px-4 rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow-md`}

@@ -11,6 +11,10 @@ class LoginService {
       const localUser = registeredUsers.find(user => user.username === username);
 
       if (localUser) {
+        // Проверяем пароль для локальных пользователей
+        if (localUser.password !== password) {
+          throw new Error('Invalid password');
+        }
         return localUser;
       }
 
@@ -27,7 +31,7 @@ class LoginService {
       };
     } catch (error) {
       console.error("Login error:", error);
-      throw error;
+      throw new Error(error.response?.data?.message || 'Invalid credentials');
     }
   }
 
@@ -170,7 +174,7 @@ class LoginService {
       resetRequests.push({
         email,
         token: resetToken,
-        expiresAt: Date.now() + 3600000,
+        expiresAt: Date.now() + 3600000, // 1 hour
         used: false
       });
       localStorage.setItem('passwordResetRequests', JSON.stringify(resetRequests));
@@ -184,13 +188,24 @@ class LoginService {
       };
     } catch (error) {
       console.error("Password reset error:", error);
-      throw error;
+      throw new Error(error.message || 'Failed to send reset instructions');
     }
   }
 
   static async resetPassword(token, newPassword) {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Валидация пароля
+      if (!newPassword || newPassword.length < 6) {
+        throw new Error('Password must be at least 6 characters long');
+      }
+
+      // Проверка на простой пароль
+      const commonPasswords = ['password', '123456', 'qwerty', 'admin', '111111'];
+      if (commonPasswords.includes(newPassword.toLowerCase())) {
+        throw new Error('Password is too common. Please choose a stronger password');
+      }
 
       const resetRequests = JSON.parse(localStorage.getItem('passwordResetRequests') || '[]');
       const resetRequest = resetRequests.find(req => req.token === token && !req.used);
@@ -203,10 +218,6 @@ class LoginService {
         throw new Error('Reset token has expired');
       }
 
-      if (newPassword.length < 6) {
-        throw new Error('Password must be at least 6 characters');
-      }
-
       const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
       const userIndex = registeredUsers.findIndex(u => u.email === resetRequest.email);
 
@@ -214,9 +225,17 @@ class LoginService {
         throw new Error('User not found');
       }
 
+      // Проверяем, не совпадает ли новый пароль со старым
+      if (registeredUsers[userIndex].password === newPassword) {
+        throw new Error('New password cannot be the same as the old password');
+      }
+
+      // Обновляем пароль
       registeredUsers[userIndex].password = newPassword;
+      registeredUsers[userIndex].updatedAt = new Date().toISOString();
       localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
 
+      // Помечаем токен как использованный
       resetRequest.used = true;
       localStorage.setItem('passwordResetRequests', JSON.stringify(resetRequests));
 
@@ -226,7 +245,7 @@ class LoginService {
       };
     } catch (error) {
       console.error("Reset password error:", error);
-      throw error;
+      throw new Error(error.message || 'Failed to reset password');
     }
   }
 
@@ -243,6 +262,20 @@ class LoginService {
     }
 
     return {valid: true, email: resetRequest.email};
+  }
+
+  // Новая функция для проверки сложности пароля
+  static validatePasswordStrength(password) {
+    if (password.length < 6) {
+      return {valid: false, message: 'Password must be at least 6 characters'};
+    }
+
+    const commonPasswords = ['password', '123456', 'qwerty', 'admin', '111111', '000000'];
+    if (commonPasswords.includes(password.toLowerCase())) {
+      return {valid: false, message: 'Password is too common'};
+    }
+
+    return {valid: true, message: 'Password is strong enough'};
   }
 }
 

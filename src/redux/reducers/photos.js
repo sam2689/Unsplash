@@ -75,6 +75,9 @@ export function photosReducer(state, action) {
         isLoadingPhotos: true
       };
 
+    case 'SET_COLLECTIONS_SEARCH':
+      return {...state, collections: action.payload};
+
     default:
       return state;
   }

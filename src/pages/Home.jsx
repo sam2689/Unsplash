@@ -7,6 +7,7 @@ import CollectionsCarousel from "../components/CollectionsCarousel.jsx";
 import SearchModal from "../components/SearchModal.jsx";
 import {useTheme} from '../hooks/useTheme';
 import Search from '../assets/icons/Search.svg?react'
+import Logo from "../assets/icons/logo.svg";
 
 export default function Home() {
   const {state, handleLoadMore} = usePhotos();
@@ -40,6 +41,7 @@ export default function Home() {
           ? 'bg-gradient-to-br from-blue-900 to-indigo-900'
           : 'bg-gradient-to-br from-blue-50 to-indigo-100'
       }`}>
+
         <div className="max-w-6xl mx-auto text-center">
           <h1 className={`text-5xl font-bold mb-6 ${
             isDark ? 'text-white' : 'text-gray-900'
